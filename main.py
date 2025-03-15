@@ -9,6 +9,9 @@ from discord.ext import commands
 from discord import Intents, Message
 import asyncio
 import time
+from responses import get_response
+import datetime
+
 
 # STEP 0: LOAD OUR TOKEN FROM SOMEWHERE SAFE
 load_dotenv()
