@@ -75,12 +75,12 @@ async def on_message(message: Message) -> None:
         message_count[user_id] += 1
 
     # Command-like functionality using messages instead of `@bot.command`
-    if message.content.startswith("!start_tracking"):
-        try:
-            duration = int(message.content.split()[1])  # Get the duration from the message
-            await start_tracking(message.channel, duration)
-        except (IndexError, ValueError):
-            await message.channel.send("Please specify a valid duration for tracking in seconds.")
+    # if message.content.startswith("!start_tracking"):
+    #     try:
+    #         duration = int(message.content.split()[1])  # Get the duration from the message
+    #         await start_tracking(message.channel, duration)
+    #     except (IndexError, ValueError):
+    #         await message.channel.send("Please specify a valid duration for tracking in seconds.")
 
 async def start_tracking(channel, duration):
     message_count.clear()
@@ -106,6 +106,8 @@ async def create_event(message: Message):
     name, location, start_d, start_t, end_d, end_t = message_str.split(", ")[1:]
     start_datetime = convert_to_datetime(start_d, start_t)
     end_datetime = convert_to_datetime(end_d, end_t)
+    duration = end_datetime - start_datetime
+    await start_tracking(message.channel, duration)
     await discord.Guild.create_scheduled_event(self=message.guild, name=name, location=location, start_time=start_datetime, end_time=end_datetime, entity_type=discord.EntityType.external, privacy_level=discord.PrivacyLevel.guild_only)
 
 
