@@ -11,7 +11,7 @@ intents = discord.Intents.default()
 intents.message_content = True  # Enable access to message content
 bot = commands.Bot(command_prefix='em/',intents = intents)
 message_count = {}
-duration = 10
+
 @bot.event
 async def on_message(message):
     if message.author.bot:
