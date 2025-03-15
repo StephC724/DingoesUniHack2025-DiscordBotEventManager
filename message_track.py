@@ -7,13 +7,6 @@ from responses import get_response
 import asyncio
 import time
 
-load_dotenv()
-TOKEN: Final[str] = os.getenv('DISCORD_TOKEN')
-
-# STEP 1: BOT SETUP, allow bot to access intents
-intents: Intents = Intents.default()
-intents.message_content = True  # NOQA
-client: Client = Client(intents=intents)
 
 message_count = {}
 async def start_tracking(channel, duration):
