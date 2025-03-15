@@ -8,9 +8,7 @@ import time
 
 intents = discord.Intents.default()
 intents.message_content = True  # Enable access to message content
-bot = commands.Bot(command_prefix="!", intents=intents)
-
-bot = commands.Bot(command_prefix='em/')
+bot = commands.Bot(command_prefix='em/',intents = intents)
 message_count = {}
 
 @bot.event
@@ -28,6 +26,7 @@ async def on_message(message):
 
 @bot.commands(name="start_tracking")
 async def start_tracker(duration, ctx):
+    await ctx.send('start_tracking')
     
     message_count.clear()
 
