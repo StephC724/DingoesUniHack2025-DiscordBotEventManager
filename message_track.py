@@ -40,7 +40,8 @@ async def start_tracker(duration, ctx):
         await ctx.send(f"Message count after {duration} seconds:\n{results}")
 
     
-
+if __name__ == "__main__":
+    main()
 
 
 
