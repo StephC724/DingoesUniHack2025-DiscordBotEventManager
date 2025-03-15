@@ -75,12 +75,12 @@ async def on_message(message: Message) -> None:
         message_count[user_id] += 1
 
     # Command-like functionality using messages instead of `@bot.command`
-    # if message.content.startswith("!start_tracking"):
-    #     try:
-    #         duration = int(message.content.split()[1])  # Get the duration from the message
-    #         await start_tracking(message.channel, duration)
-    #     except (IndexError, ValueError):
-    #         await message.channel.send("Please specify a valid duration for tracking in seconds.")
+    if message.content.startswith("!start_tracking"):
+        try:
+            duration = int(message.content.split()[1])  # Get the duration from the message
+            await start_tracking(message.channel, duration)
+        except (IndexError, ValueError):
+            await message.channel.send("Please specify a valid duration for tracking in seconds.")
 
 async def start_tracking(channel, duration):
     message_count.clear()
