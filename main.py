@@ -91,12 +91,6 @@ async def start_tracking(channel, duration):
     else:
         results = "\n".join([f"<@{user_id}>: {count} messages" for user_id, count in message_count.items()])
         await channel.send(f"Message count after {duration} seconds:\n{results}")
-
-        
-    
-
-
-
     
 
 
