@@ -7,9 +7,13 @@ from responses import get_response
 import asyncio
 import time
 
-intents = discord.Intents.default()
-intents.message_content = True  # Enable access to message content
-bot = commands.Bot(command_prefix='em/',intents = intents)
+load_dotenv()
+TOKEN: Final[str] = os.getenv('DISCORD_TOKEN')
+
+# STEP 1: BOT SETUP, allow bot to access intents
+intents: Intents = Intents.default()
+intents.message_content = True  # NOQA
+client: Client = Client(intents=intents)
 
 message_count = {}
 async def start_tracking(channel, duration):
