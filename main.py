@@ -79,7 +79,7 @@ async def on_message(message: Message) -> None:
         except (IndexError, ValueError):
             await message.channel.send("Please specify a valid duration for tracking in seconds.")
 
-async define start_tracking(channel, duration):
+async def start_tracking(channel, duration):
     message_count.clear()
 
     await channel.send(f"Tracking messages for {duration} seconds...")
