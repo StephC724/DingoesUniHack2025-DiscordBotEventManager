@@ -20,7 +20,7 @@ intents.message_content = True  # NOQA
 client: Client = Client(intents=intents)
 
 #This stuff
-bot = commands.Bot(command_prefix='em/')
+
 message_count = {}
 
 
@@ -65,32 +65,37 @@ async def on_message(message: Message) -> None:
     await check_functions(message)
     await send_message(message, user_message)
 
-#this stuff
-@bot.event
-async def on_message(message):
-    if message.author.bot:
-        return
-
     user_id = message.author.id
     if user_id not in message_count:
         message_count[user_id] = 1
     else:
         message_count[user_id] += 1
 
-    await bot.process_commands(message)
+    # Command-like functionality using messages instead of `@bot.command`
+    if message.content.startswith("!start_tracking"):
+        try:
+            duration = int(message.content.split()[1])  # Get the duration from the message
+            await start_tracking(message.channel, duration)
+        except (IndexError, ValueError):
+            await message.channel.send("Please specify a valid duration for tracking in seconds.")
 
-@bot.command(name = "start_tracking")
-async def start_tracker(duration, ctx):
-    
+async define start_tracking(channel, duration):
     message_count.clear()
+
+    await channel.send(f"Tracking messages for {duration} seconds...")
 
     await asyncio.sleep(duration)
 
     if not message_count:
-        await ctx.send("No messages were sent during the tracking period.")
+        await channel.send("No messages were sent during the tracking period.")
     else:
         results = "\n".join([f"<@{user_id}>: {count} messages" for user_id, count in message_count.items()])
-        await ctx.send(f"Message count after {duration} seconds:\n{results}")
+        await channel.send(f"Message count after {duration} seconds:\n{results}")
+
+        
+    
+
+
 
     
 
