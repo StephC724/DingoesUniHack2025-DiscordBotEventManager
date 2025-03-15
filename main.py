@@ -11,6 +11,7 @@ import asyncio
 import time
 from responses import get_response
 import datetime
+from message_track import start_tracking
 
 
 # STEP 0: LOAD OUR TOKEN FROM SOMEWHERE SAFE
