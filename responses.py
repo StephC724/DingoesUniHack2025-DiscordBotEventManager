@@ -11,7 +11,8 @@ def get_response(user_input: str) -> str:
     elif 'hello' in lowered:
         return 'Hello there!'
 
-
+    elif 'create_event' in lowered:
+        return 'Attempting to create event, check event list...'
 
 
 
