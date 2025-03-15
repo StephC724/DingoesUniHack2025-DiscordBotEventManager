@@ -4,6 +4,11 @@ from dotenv import load_dotenv
 from discord import Intents, Client, Message
 from responses import get_response
 from check_functions import *
+#thi stuff
+from discord.ext import commands
+from discord import Intents, Message
+import asyncio
+import time
 
 # STEP 0: LOAD OUR TOKEN FROM SOMEWHERE SAFE
 load_dotenv()
@@ -13,6 +18,10 @@ TOKEN: Final[str] = os.getenv('DISCORD_TOKEN')
 intents: Intents = Intents.default()
 intents.message_content = True  # NOQA
 client: Client = Client(intents=intents)
+
+#This stuff
+bot = commands.Bot(command_prefix='em/')
+message_count = {}
 
 
 # STEP 2: MESSAGE FUNCTIONALITY
@@ -55,6 +64,35 @@ async def on_message(message: Message) -> None:
 
     await check_functions(message)
     await send_message(message, user_message)
+
+#this stuff
+@bot.event
+async def on_message(message):
+    if message.author.bot:
+        return
+
+    user_id = message.author.id
+    if user_id not in message_count:
+        message_count[user_id] = 1
+    else:
+        message_count[user_id] += 1
+
+    await bot.process_commands(message)
+
+@bot.command(name = "start_tracking")
+async def start_tracker(duration, ctx):
+    
+    message_count.clear()
+
+    await asyncio.sleep(duration)
+
+    if not message_count:
+        await ctx.send("No messages were sent during the tracking period.")
+    else:
+        results = "\n".join([f"<@{user_id}>: {count} messages" for user_id, count in message_count.items()])
+        await ctx.send(f"Message count after {duration} seconds:\n{results}")
+
+    
 
 
 
