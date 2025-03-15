@@ -62,7 +62,7 @@ async def on_message(message: Message) -> None:
 
     print(f'[{channel}] {username}: "{user_message}"')
 
-    await check_functions(message)
+    #await check_functions(message)
     await send_message(message, user_message)
 
     user_id = message.author.id
