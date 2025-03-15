@@ -11,8 +11,31 @@ import asyncio
 import time
 from responses import get_response
 import datetime
-from pointSystem import *
 from message_track import start_tracking
+import discord
+from discord import app_commands
+from pointSystem import *
+
+
+#apprently takes like an hour for  commands to be up for the bot on all servers
+#this way its just the dev server
+MY_GUILD = discord.Object(id=1350063882705829950)
+
+pointSystem = pointSystem()
+
+class MyClient(discord.Client):
+    def __init__(self, *, intents: discord.Intents):
+        super().__init__(intents=intents)
+        self.tree = app_commands.CommandTree(self)
+        
+        
+
+
+
+    async def setup_hook(self):
+        # This copies the global commands over to your guild.
+        self.tree.copy_global_to(guild=MY_GUILD)
+        await self.tree.sync(guild=MY_GUILD)
 
 
 # STEP 0: LOAD OUR TOKEN FROM SOMEWHERE SAFE
@@ -22,7 +45,8 @@ TOKEN: Final[str] = os.getenv('DISCORD_TOKEN')
 # STEP 1: BOT SETUP, allow bot to access intents
 intents: Intents = Intents.default()
 intents.message_content = True  # NOQA
-client: Client = Client(intents=intents)
+client = MyClient(intents=intents)
+
 
 #This stuff
 
@@ -97,6 +121,59 @@ async def start_tracking(channel, duration):
         results = "\n".join([f"<@{user_id}>: {count} messages" for user_id, count in message_count.items()])
         await channel.send(f"Message count after {duration} seconds:\n{results}")
 
+###
+### bot commands
+###
+@client.tree.command()
+#describtion of each value that needs to be input
+@app_commands.describe(
+    user='the user to give points to',
+    amount='The amount of points to give',
+)
+#sets up command, function name is the name of command    must include interaction
+async def giveuserpoints(interaction: discord.Interaction, user: discord.Member, amount: int):
+    #command description
+    """Give a user points of X amount"""
+    ###what ever the command does
+    pointSystem.userAddPoints(interaction.guild_id, user, amount)
+    ###
+    #response
+    await interaction.response.send_message(f'gave {amount} points to {user.mention}')
+
+@client.tree.command()
+@app_commands.describe(
+    user='the user to remove points from',
+    amount='The amount of points to remove',
+)
+async def removeuserpoints(interaction: discord.Interaction, user: discord.Member, amount: int):
+    """remove X amount of points from a user"""
+    pointSystem.userRemovePoints(interaction.guild_id, user, amount)
+    await interaction.response.send_message(f'removed {amount} points from {user.mention}')
+
+
+@client.tree.command()
+@app_commands.describe(
+    user='the user you want to see the score of'
+)
+async def userscore(interaction: discord.Interaction, user: discord.Member):
+    """see a users score"""
+    #call to retrieve users score
+    await interaction.response.send_message(f'not implemented')
+
+
+
+@client.tree.command()
+@app_commands.describe(
+)
+async def leaderboard(interaction: discord.Interaction):
+    """see the top 20 scores on the server"""
+    pointSystem.giveLeaderboard(interaction.guild_id)
+    await interaction.response.send_message(f'not implemented')
+
+###
+###
+###
+
 
 
 # STEP 5: MAIN ENTRY POINT
@@ -106,3 +183,5 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
+
+
