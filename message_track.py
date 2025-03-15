@@ -1,7 +1,7 @@
 from typing import Final
 import os
 import discord
-from discord import Intents, Client, Message
+from discord import Intents, Client, Message, commands
 from responses import get_response
 import asyncio
 import time
