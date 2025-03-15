@@ -1,6 +1,7 @@
 from typing import Final
 import os
 import discord
+from discord.ext import commands
 from discord import Intents, Client, Message
 from responses import get_response
 import asyncio
@@ -10,7 +11,7 @@ intents = discord.Intents.default()
 intents.message_content = True  # Enable access to message content
 bot = commands.Bot(command_prefix='em/',intents = intents)
 message_count = {}
-
+duration = 10
 @bot.event
 async def on_message(message):
     if message.author.bot:
@@ -24,7 +25,7 @@ async def on_message(message):
 
     await bot.process_commands(message)
 
-@bot.commands(name="start_tracking")
+@bot.command(name="start_tracking")
 async def start_tracker(duration, ctx):
     await ctx.send('start_tracking')
     
