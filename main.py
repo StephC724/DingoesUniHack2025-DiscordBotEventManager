@@ -107,9 +107,8 @@ async def create_event(message: Message):
     start_datetime = convert_to_datetime(start_d, start_t)
     end_datetime = convert_to_datetime(end_d, end_t)
     duration = end_datetime - start_datetime
-    await start_tracking(message.channel, duration)
     await discord.Guild.create_scheduled_event(self=message.guild, name=name, location=location, start_time=start_datetime, end_time=end_datetime, entity_type=discord.EntityType.external, privacy_level=discord.PrivacyLevel.guild_only)
-
+    start_tracking(message.channel, duration)
 
 def convert_to_datetime(date, time):
     day, month, year = [int(i) for i in date.split("/")]
