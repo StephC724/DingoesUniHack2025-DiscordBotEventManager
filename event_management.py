@@ -11,6 +11,8 @@ async def create_event(message: Message):
     """
     Event message format: 
     /em create_event, name, location, start_date, start_time, end_date, end_time
+
+    Creates an event on the Discord server when user sends above formatted message
     """
     message_str = message.content
     name, location, start_d, start_t, end_d, end_t = message_str.split(", ")[1:]
@@ -25,6 +27,10 @@ def convert_to_datetime(date, time):
     dt = datetime.datetime(year=year, month=month, day=day, hour=hour, minute=minute)
     dt = dt.replace(tzinfo=datetime.timezone.utc)
     return dt
+
+
+async def get_events(server):
+    return await discord.Guild.fetch_scheduled_events(guild=server)
 
 
 if __name__ == "__main__":
