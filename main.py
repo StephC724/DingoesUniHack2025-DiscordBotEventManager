@@ -78,6 +78,7 @@ async def on_ready() -> None:
     print(f'{client.user} is now running!')
 
 
+
 # STEP 4: HANDLING INCOMING MESSAGES
 @client.event
 async def on_message(message: Message) -> None:
@@ -122,7 +123,7 @@ async def start_tracking(channel, duration):
         for user,messages in message_count.items():
             pointSystem.userRemovePoints(channel.guild, user, messages)
             
-        results = "\n".join([f"<@{user_id}>: {count} messages" for user_id, count in message_count.items()])
+        results = "\n".join([f"<@{user_id}>: {count} messages, " for user_id, count in message_count.items()])
         await channel.send(f"Message count after {duration} seconds:\n{results}")
 
 ###
