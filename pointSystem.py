@@ -34,17 +34,17 @@ class pointSystem():
         
     #Gets user points, This stuff
     def getUserPoints(self, serverID: str, userID: str):
-    """Retrieves the points of a user from a specific server."""
-    if self.checkServerExists(serverID):
-        if self.checkUserExists(serverID, userID):
-            # Return the user's points
-            return self.pointDatabase[self.serversKey][serverID][self.usersKey][userID][self.pointsKey]
+        """Retrieves the points of a user from a specific server."""
+        if self.checkServerExists(serverID):
+            if self.checkUserExists(serverID, userID):
+                # Return the user's points
+                return self.pointDatabase[self.serversKey][serverID][self.usersKey][userID][self.pointsKey]
+            else:
+                print("\n-------------------------------------------------------------------------------------\nUSER DOESN'T EXISTS\n-------------------------------------------------------------------------------------\n")
+                return None
         else:
-            print("\n-------------------------------------------------------------------------------------\nUSER DOESN'T EXISTS\n-------------------------------------------------------------------------------------\n")
+            print("\n-------------------------------------------------------------------------------------\nSERVER DOESN'T EXIST\n-------------------------------------------------------------------------------------\n")
             return None
-    else:
-        print("\n-------------------------------------------------------------------------------------\nSERVER DOESN'T EXIST\n-------------------------------------------------------------------------------------\n")
-        return None
 
     
     #called when points are added
