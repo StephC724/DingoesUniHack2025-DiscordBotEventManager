@@ -96,11 +96,7 @@ async def on_message(message: Message) -> None:
 
     current_events = await get_current_events(message.guild)
     if len(current_events) > 0: #Is the message sent during a study session
-        print("Message sent during study session")
         pointSystem.userRemovePoints(serverID=message.guild, userID=message.author, points_amount=1)
-
-    if message.content.startswith("!create_event"):
-        await create_event(message)
 
     # Command-like functionality using messages instead of `@bot.command`
     if message.content.startswith("!start_tracking"):
