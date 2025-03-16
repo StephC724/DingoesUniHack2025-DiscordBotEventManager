@@ -163,7 +163,8 @@ async def removeuserpoints(interaction: discord.Interaction, user: discord.Membe
 async def userscore(interaction: discord.Interaction, user: discord.Member):
     """see a users score"""
     #call to retrieve users score
-    await interaction.response.send_message(f'not implemented')
+    points = pointSystem.getUserpoints(interaction.guild_id,user)
+    await interaction.response.send_message(f'{user.mention} has {points} points')
 
 
 
