@@ -8,6 +8,7 @@ from datetime import *
 import pytz
 
 
+
 def convert_to_datetime(date:str, time:str):
     day, month, year = [int(i) for i in date.split("/")]
     hour, minute = [int(i) for i in time.split(":")]

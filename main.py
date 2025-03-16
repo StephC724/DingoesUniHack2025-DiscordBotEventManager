@@ -19,7 +19,7 @@ from ai_responder import ai_msgchecker, ai_response
 #apprently takes like an hour for  commands to be up for the bot on all servers
 #this way its just the dev server
 MY_GUILD = discord.Object(id=1350063882705829950)
-daPointSystem = pointSystem()
+pointSystemObj = pointSystem()
 tracking = False
 
 
@@ -96,10 +96,12 @@ async def on_message(message: Message) -> None:
 
     current_events = await get_current_events(message.guild)
     if len(current_events) > 0: #Is the message sent during a study session
-        daPointSystem.userRemovePoints(serverID=message.guild, userID=message.author, points_amount=1)
+        print("Attempted to deduct points")
+        pointSystemObj.userRemovePoints(message.guild, message.author, 1)
 
     if tracking: #If tracking the amount of messages in a time period
-        daPointSystem.userRemovePoints(serverID=message.guild, userID=message.author, points_amount=1)
+        print("Points attempted to remove")
+        pointSystemObj.userRemovePoints(serverID=message.guild, userID=message.author, points_amount=1)
 
     # Command-like functionality using messages instead of `@bot.command`
     if message.content.startswith("!start_tracking"):
@@ -125,9 +127,7 @@ async def start_tracking(channel, duration):
         
         for user,messages in message_count.items():
             print(f"Removing {messages} points from user {user}.")
-            print(f"Guild id: {channel.guild}")
-            daPointSystem.userRemovePoints(channel.guild, user, messages)
-            
+            pointSystemObj.userRemovePoints(channel.guild, user, messages)
             
         results = "\n".join([f"<@{user_id}>: {count} messages, " for user_id, count in message_count.items()])
         await channel.send(f"Message count after {duration} seconds:\n{results}")
@@ -146,7 +146,7 @@ async def giveuserpoints(interaction: discord.Interaction, user: discord.Member,
     #command description
     """Give a user points of X amount"""
     ###what ever the command does
-    daPointSystem.userAddPoints(interaction.guild_id, user, amount)
+    pointSystemObj.userAddPoints(interaction.guild_id, user, amount)
     ###
     #response
     await interaction.response.send_message(f'gave {amount} points to {user.mention}')
@@ -158,7 +158,7 @@ async def giveuserpoints(interaction: discord.Interaction, user: discord.Member,
 )
 async def removeuserpoints(interaction: discord.Interaction, user: discord.Member, amount: int):
     """remove X amount of points from a user"""
-    daPointSystem.userRemovePoints(interaction.guild_id, user, amount)
+    pointSystemObj.userRemovePoints(interaction.guild_id, user, amount)
     await interaction.response.send_message(f'removed {amount} points from {user.mention}')
 
 
@@ -170,7 +170,7 @@ async def userscore(interaction: discord.Interaction, user: discord.Member):
     """see a users score"""
     
     #call to retrieve users score
-    points = daPointSystem.getUserPoints(interaction.guild_id,user)
+    points = pointSystemObj.getUserPoints(interaction.guild_id,user)
     await interaction.response.send_message(f'{user.mention} has {points} points')
 
 
@@ -180,7 +180,7 @@ async def userscore(interaction: discord.Interaction, user: discord.Member):
 )
 async def leaderboard(interaction: discord.Interaction):
     """see the top 20 scores on the server"""
-    temp_leaderboard = daPointSystem.giveLeaderboard(interaction.guild_id)
+    temp_leaderboard = pointSystemObj.giveLeaderboard(interaction.guild_id)
     leaderboard = []
     for user in temp_leaderboard:
         leaderboard.append(MemberConverter().convert(ctx, user)
