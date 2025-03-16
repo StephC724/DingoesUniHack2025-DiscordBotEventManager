@@ -151,8 +151,7 @@ async def giveuserpoints(interaction: discord.Interaction, user: discord.Member,
     #command description
     """Give a user points of X amount"""
     ###what ever the command does
-    print(f"\n\n\n\n\n\n\n\nUSERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR\n{user}\n\n\n\n\n\n\n")
-    pointSystemObj.userAddPoints(interaction.guild_id, user, amount)
+    pointSystemObj.userAddPoints(interaction.guild_id, user.id, amount)
     ###
     #response
     await interaction.response.send_message(f'gave {amount} points to {user.mention}')
@@ -164,8 +163,7 @@ async def giveuserpoints(interaction: discord.Interaction, user: discord.Member,
 )
 async def removeuserpoints(interaction: discord.Interaction, user: discord.Member, amount: int):
     """remove X amount of points from a user"""
-    print("BRUUUUUUUUUUUUUHHHHHHHHH",user)
-    pointSystemObj.userRemovePoints(interaction.guild_id, user, amount)
+    pointSystemObj.userRemovePoints(interaction.guild_id, user.id, amount)
     await interaction.response.send_message(f'removed {amount} points from {user.mention}')
 
 
@@ -177,7 +175,7 @@ async def userscore(interaction: discord.Interaction, user: discord.Member):
     """see a users score"""
     
     #call to retrieve users score
-    points = pointSystemObj.getUserPoints(interaction.guild_id,user)
+    points = pointSystemObj.getUserPoints(interaction.guild_id,user.id)
     await interaction.response.send_message(f'{user.mention} has {points} points')
 
 @client.tree.command()
@@ -197,9 +195,14 @@ async def leaderboard(interaction: discord.Interaction):
     temp_leaderboard = pointSystemObj.giveLeaderboard(interaction.guild_id)
     leaderboard = []
     for user in temp_leaderboard:
-        leaderboard.append(MemberConverter().convert(ctx, user)
+        member = user
+        #interaction.guild.get_member(int(user))
+        leaderboard.append(f'{member} score: {temp_leaderboard[user]['UserPoints']} \n'
 )  
-    await interaction.response.send_message(f'{leaderboard}')
+    response = f"LeaderBoard for {interaction.guild} \n"
+    for line in leaderboard:
+        response = (response + "" + line)
+    await interaction.response.send_message(response)
 
 @client.tree.command()
 #describtion of each value that needs to be input
