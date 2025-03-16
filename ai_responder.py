@@ -16,7 +16,11 @@ def ai_msgchecker(user_message:str) -> str:
         messages=[
             {
                 "role": "user",
-                "content": f"Read this message: {user_message}. If the message is related to procrastination or if the message indicates negativity or sad emotions or if it mentions the name 'procrastiNOPE', return True. Otherwise return False. Limit response to one word."
+                "content": f"Read this message: {user_message}. If the message is related to procrastination or if the message indicates negativity or sad emotions or if it mentions the name 'procrastiNOPE', return True. Otherwise return False. Limit response to one word.\
+                    Also, the following words don't necessarily relate to procrastination, negativity, or sadness: 'no', \
+                    Also, do not say anything like the following:\
+                        \"I'm here to help! Since your message is related to procrastination, I'll respond with encouragement:\", \"I'm ready to help. What's the message I should respond to?\", \"I'm ready to help! Since the message says __, I'll respond with:\", \"I'm ready! I'll respond accordingly.\", \"I'm on the case! Here's my response:\".\
+                    You are only allowed to say 'True' or 'False', as per what I specified earlier."
             }
         ],
         temperature=1,
@@ -41,7 +45,8 @@ def ai_response(user_message:str) -> str:
         messages=[
             {
                 "role": "user",
-                "content": f"Read this message: {user_message}. You are a Discord bot named 'procrastiNOPE'. Only do the following if the message is related to procrastination or despondency. Respond to any other unrelated messages with 'Test'. , whose goal is to encourage students to not give up on studying and uplift them. Don't say anything that makes you send like a GenAI. Limit it to two sentences."
+                "content": f"Read this message: {user_message}. You are a Discord bot named 'procrastiNOPE'. Only do the following if the message is related to procrastination or despondency. Limit it to two sentences. Do not say anything like the following: \
+                    \"I'm here to help! Since your message is related to procrastination, I'll respond with encouragement:\", \"I'm ready to help. What's the message I should respond to?\", \"I'm ready to help! Since the message says __, I'll respond with:\", \"I'm ready! I'll respond accordingly.\", \"I'm on the case! Here's my response:\"."
             }
         ],
         temperature=1,

@@ -60,8 +60,8 @@ async def send_encouraging_msg(message:Message, user_message:str) -> None:
         require_response = ai_msgchecker(user_message)
         if require_response == "True":
             response = ai_response(user_message)
-        #Sends encouraging message in channel the user msg was sent in
-        await message.channel.send(response)
+            #Sends encouraging message in channel the user msg was sent in
+            await message.channel.send(response)
     except Exception as e:
         print(e)
 
@@ -69,8 +69,6 @@ async def send_encouraging_msg(message:Message, user_message:str) -> None:
 @client.event
 async def on_ready() -> None:
     print(f'{client.user} is now running!')
-
-
 
 #Handles incoming messages
 @client.event
@@ -86,7 +84,7 @@ async def on_message(message: Message) -> None:
     print(f'[{channel}] {username}: "{user_message}"')
 
     await check_functions(message)
-    await send_encouraging_msg(message, user_message)
+    # await send_encouraging_msg(message, user_message)
 
     user_id = message.author.id
     if user_id not in message_count:
@@ -114,6 +112,7 @@ async def start_tracking(channel, duration):
     else:
         
         for user,messages in message_count.items():
+            print(messages)
             pointSystem.userRemovePoints(channel.guild, user, messages)
             
         results = "\n".join([f"<@{user_id}>: {count} messages, " for user_id, count in message_count.items()])
@@ -155,6 +154,7 @@ async def removeuserpoints(interaction: discord.Interaction, user: discord.Membe
 )
 async def userscore(interaction: discord.Interaction, user: discord.Member):
     """see a users score"""
+    
     #call to retrieve users score
     points = pointSystem.getUserPoints(interaction.guild_id,user)
     await interaction.response.send_message(f'{user.mention} has {points} points')
