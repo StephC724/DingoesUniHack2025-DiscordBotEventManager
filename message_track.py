@@ -7,37 +7,20 @@ from discord import Intents, Client, Message
 import asyncio
 import time
 
-intents = discord.Intents.default()
-intents.message_content = True  # Enable access to message content
-bot = commands.Bot(command_prefix='em/',intents = intents)
+
 message_count = {}
-
-@bot.event
-async def on_message(message):
-    if message.author.bot:
-        return
-
-    user_id = message.author.id
-    if user_id not in message_count:
-        message_count[user_id] = 1
-    else:
-        message_count[user_id] += 1
-
-    await bot.process_commands(message)
-
-@bot.command(name="start_tracking")
-async def start_tracker(duration, ctx):
-    await ctx.send('start_tracking')
-    
+async def start_tracking(channel, duration):
     message_count.clear()
+
+    await channel.send(f"Tracking messages for {duration} seconds...")
 
     await asyncio.sleep(duration)
 
     if not message_count:
-        await ctx.send("No messages were sent during the tracking period.")
+        await channel.send("No messages were sent during the tracking period.")
     else:
         results = "\n".join([f"<@{user_id}>: {count} messages" for user_id, count in message_count.items()])
-        await ctx.send(f"Message count after {duration} seconds:\n{results}")
+        await channel.send(f"Message count after {duration} seconds:\n{results}")
 
     
 if __name__ == "__main__":
