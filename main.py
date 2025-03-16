@@ -98,11 +98,11 @@ async def on_message(message: Message) -> None:
     print(f"{len(current_events)} NUMBER OF CURRENT EVENTS")
     if len(current_events) > 0: #Is the message sent during a study session
         print("Attempted to deduct points")
-        pointSystemObj.userRemovePoints(message.guild.id, message.author.id, 1)
+        pointSystemObj.userRemovePoints(message.guild.id, message.author, 1)
 
-    # if tracking: #If tracking the amount of messages in a time period
-    #     print(f"Points attempted to remove, tracking: {tracking}")
-    #     pointSystemObj.userRemovePoints(message.guild.id, message.author, 1)
+    if tracking: #If tracking the amount of messages in a time period
+        print("Points attempted to remove")
+        pointSystemObj.userRemovePoints(serverID=message.guild.id, userID=message.author, points_amount=1)
 
     # Command-like functionality using messages instead of `@bot.command`
     if message.content.startswith("!start_tracking"):
@@ -129,15 +129,11 @@ async def start_tracking(channel, duration):
     if not message_count:
         await channel.send("No messages were sent during the tracking period.")
     else:
-        print("\n\nJLKSDJFL:KSJDFISDJF:LKSJDKLFJLS:DJLFJKLSDJFL:JSDL:KJFKL:SDJFKJSKDJFKLSJD:KLFJKLSDJFL:JSDKLJFKL:SDJFL\n\n")
-        print(message_count.items())
-        print(len(message_count.items()))
-        print(len(message_count),"JKFLSD:JFL")
-        print(message_count,"YOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
-        for user,messages in message_count.items():
-            print(f"Removing {messages} points from user {user}.")
-            pointSystemObj.userRemovePoints(channel.guild.id, user, messages)
-        print("\n\nJLKSDJFL:KSJDFISDJF:LKSJDKLFJLS:DJLFJKLSDJFL:JSDL:KJFKL:SDJFKJSKDJFKLSJD:KLFJKLSDJFL:JSDKLJFKL:SDJFL\n\n")
+        
+        # for user,messages in message_count.items():
+        #     print(f"Removing {messages} points from user {user}.")
+        #     pointSystemObj.userRemovePoints(channel.guild, user, messages)
+
         results = "\n".join([f"<@{user_id}>: {count} messages, " for user_id, count in message_count.items()])
         await channel.send(f"Message count after {duration} seconds:\n{results}")
 
