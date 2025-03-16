@@ -4,7 +4,6 @@ import os
 from dotenv import load_dotenv
 from discord import Intents, Client, Message
 import discord
-from responses import get_response
 import datetime
 
 async def create_event(message: Message):

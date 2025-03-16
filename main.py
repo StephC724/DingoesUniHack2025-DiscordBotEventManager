@@ -2,20 +2,19 @@ from typing import Final
 import os
 from dotenv import load_dotenv
 from discord import Intents, Client, Message
-from responses import get_response
 from check_functions import *
 #thi stuff
 from discord.ext import commands
 from discord import Intents, Message
 import asyncio
 import time
-from responses import get_response
 import datetime
 from message_track import start_tracking
 import discord
 from discord import app_commands
 from pointSystem import *
 
+from ai_responder import ai_msgchecker, ai_response
 
 #apprently takes like an hour for  commands to be up for the bot on all servers
 #this way its just the dev server
@@ -38,11 +37,11 @@ class MyClient(discord.Client):
         await self.tree.sync(guild=MY_GUILD)
 
 
-# STEP 0: LOAD OUR TOKEN FROM SOMEWHERE SAFE
+#Loads Discord API token from virtual environment
 load_dotenv()
 TOKEN: Final[str] = os.getenv('DISCORD_TOKEN')
 
-# STEP 1: BOT SETUP, allow bot to access intents
+#Bot Setup -> Allows bot to access intents
 intents: Intents = Intents.default()
 intents.message_content = True  # NOQA
 client = MyClient(intents=intents)
@@ -52,48 +51,44 @@ client = MyClient(intents=intents)
 
 message_count = {}
 
-
-# STEP 2: MESSAGE FUNCTIONALITY
-async def send_message(message: Message, user_message: str) -> None:
+#AI-Generated Encouragement Message Function
+async def send_encouraging_msg(message:Message, user_message:str) -> None:
     if not user_message:
         print('(Message was empty because intents were not enabled)')
         return
-
-    # bot will message user privately if start of user message is '?'
-    is_private = user_message[0] == '?'
-
-    if is_private:
-        user_message = user_message[1:]
-
     try:
-        response: str = get_response(user_message)
-        await message.author.send(response) if is_private else await message.channel.send(response)
+        require_response = ai_msgchecker(user_message)
+        if require_response == "True":
+            response = ai_response(user_message)
+        else:
+            response = require_response
+        #Sends encouraging message in channel the user msg was sent in
+        await message.channel.send(response)
     except Exception as e:
         print(e)
 
-
-# STEP 3: HANDLING THE STARTUP
+#Handles Start-Up
 @client.event
 async def on_ready() -> None:
     print(f'{client.user} is now running!')
 
 
 
-# STEP 4: HANDLING INCOMING MESSAGES
+#Handles incoming messages
 @client.event
 async def on_message(message: Message) -> None:
-    # Don't want bot to talk to itself
+    #Prevents bot from talking to itself
     if message.author == client.user:
         return
 
+    #DEBUGGING
     username: str = str(message.author)
     user_message: str = message.content
     channel: str = str(message.channel)
-
     print(f'[{channel}] {username}: "{user_message}"')
 
     await check_functions(message)
-    await send_message(message, user_message)
+    await send_encouraging_msg(message, user_message)
 
     user_id = message.author.id
     if user_id not in message_count:
@@ -182,12 +177,9 @@ async def leaderboard(interaction: discord.Interaction):
 
 
 
-# STEP 5: MAIN ENTRY POINT
+#MAIN ENTRY POINT (turns on bot)
 def main() -> None:
     client.run(token=TOKEN)
 
-
 if __name__ == '__main__':
     main()
-
-

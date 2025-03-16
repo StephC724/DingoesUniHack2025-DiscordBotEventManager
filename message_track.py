@@ -3,7 +3,6 @@ import os
 import discord
 from discord.ext import commands
 from discord import Intents, Client, Message
-from responses import get_response
 import asyncio
 import time
 
