@@ -86,7 +86,7 @@ async def on_message(message: Message) -> None:
     channel: str = str(message.channel)
     print(f'[{channel}] {username}: "{user_message}"')
 
-    # await send_encouraging_msg(message, user_message)
+    await send_encouraging_msg(message, user_message)
 
     user_id = message.author.id
     if user_id not in message_count:
@@ -95,13 +95,14 @@ async def on_message(message: Message) -> None:
         message_count[user_id] += 1
 
     current_events = await get_current_events(message.guild)
+    print(f"{len(current_events)} NUMBER OF CURRENT EVENTS")
     if len(current_events) > 0: #Is the message sent during a study session
         print("Attempted to deduct points")
-        pointSystemObj.userRemovePoints(message.guild, message.author, 1)
+        pointSystemObj.userRemovePoints(message.guild.id, message.author.id, 1)
 
-    if tracking: #If tracking the amount of messages in a time period
-        print("Points attempted to remove")
-        pointSystemObj.userRemovePoints(serverID=message.guild, userID=message.author, points_amount=1)
+    # if tracking: #If tracking the amount of messages in a time period
+    #     print(f"Points attempted to remove, tracking: {tracking}")
+    #     pointSystemObj.userRemovePoints(message.guild.id, message.author, 1)
 
     # Command-like functionality using messages instead of `@bot.command`
     if message.content.startswith("!start_tracking"):
@@ -116,19 +117,27 @@ async def start_tracking(channel, duration):
     message_count.clear()
     
     await channel.send(f"Tracking messages for {duration} seconds...")
+    print("______________________________________________________________")
+    print(f"TRACKING NOW FOR {duration}")
 
     await asyncio.sleep(duration)
 
     tracking = False
 
+
+    print(f"{message_count} YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOY")
     if not message_count:
         await channel.send("No messages were sent during the tracking period.")
     else:
-        
+        print("\n\nJLKSDJFL:KSJDFISDJF:LKSJDKLFJLS:DJLFJKLSDJFL:JSDL:KJFKL:SDJFKJSKDJFKLSJD:KLFJKLSDJFL:JSDKLJFKL:SDJFL\n\n")
+        print(message_count.items())
+        print(len(message_count.items()))
+        print(len(message_count),"JKFLSD:JFL")
+        print(message_count,"YOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
         for user,messages in message_count.items():
             print(f"Removing {messages} points from user {user}.")
-            pointSystemObj.userRemovePoints(channel.guild, user, messages)
-            
+            pointSystemObj.userRemovePoints(channel.guild.id, user, messages)
+        print("\n\nJLKSDJFL:KSJDFISDJF:LKSJDKLFJLS:DJLFJKLSDJFL:JSDL:KJFKL:SDJFKJSKDJFKLSJD:KLFJKLSDJFL:JSDKLJFKL:SDJFL\n\n")
         results = "\n".join([f"<@{user_id}>: {count} messages, " for user_id, count in message_count.items()])
         await channel.send(f"Message count after {duration} seconds:\n{results}")
 
@@ -146,6 +155,7 @@ async def giveuserpoints(interaction: discord.Interaction, user: discord.Member,
     #command description
     """Give a user points of X amount"""
     ###what ever the command does
+    print(f"\n\n\n\n\n\n\n\nUSERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR\n{user}\n\n\n\n\n\n\n")
     pointSystemObj.userAddPoints(interaction.guild_id, user, amount)
     ###
     #response
@@ -158,6 +168,7 @@ async def giveuserpoints(interaction: discord.Interaction, user: discord.Member,
 )
 async def removeuserpoints(interaction: discord.Interaction, user: discord.Member, amount: int):
     """remove X amount of points from a user"""
+    print("BRUUUUUUUUUUUUUHHHHHHHHH",user)
     pointSystemObj.userRemovePoints(interaction.guild_id, user, amount)
     await interaction.response.send_message(f'removed {amount} points from {user.mention}')
 
@@ -173,6 +184,13 @@ async def userscore(interaction: discord.Interaction, user: discord.Member):
     points = pointSystemObj.getUserPoints(interaction.guild_id,user)
     await interaction.response.send_message(f'{user.mention} has {points} points')
 
+@client.tree.command()
+@app_commands.describe(
+    user='prints the database yo'
+)
+async def printdata(interaction: discord.Interaction, user: discord.Member):
+    """prints the database yo"""
+    await interaction.response.send_message(f'{pointSystemObj.pointDatabase}')
 
 
 @client.tree.command()

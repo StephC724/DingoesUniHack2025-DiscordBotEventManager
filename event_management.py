@@ -1,4 +1,4 @@
-from main import main
+#from main import main
 from typing import Final
 import os
 from dotenv import load_dotenv
