@@ -71,16 +71,16 @@ class pointSystem():
         #used to remove points from a user
     def userRemovePoints(self,serverID: str, userID: str, points_amount: int):
         if self.checkServerExists(serverID):
-            print("\n-------------------------------------------------------------------------------------\nSERVER EXISTS\n-------------------------------------------------------------------------------------\n")
+            print(f"\n-------------------------------------------------------------------------------------\nSERVER ({serverID}) EXISTS\n-------------------------------------------------------------------------------------\n")
             chosenServer = self.pointDatabase[self.serversKey][serverID]
             if self.checkUserExists(serverID,userID):
-                print("\n-------------------------------------------------------------------------------------\nUSER EXISTS\n-------------------------------------------------------------------------------------\n")
+                print(f"\n-------------------------------------------------------------------------------------\nUSER ({userID}) EXISTS\n-------------------------------------------------------------------------------------\n")
             else:
-                print("\n-------------------------------------------------------------------------------------\nUSER DOESN'T EXIST\n-------------------------------------------------------------------------------------\n")
+                print(f"\n-------------------------------------------------------------------------------------\nUSER ({userID}) DOESN'T EXIST\n-------------------------------------------------------------------------------------\n")
                 # Use addNewUser
                 self.addNewUser(serverID,userID)
         else:
-            print("\n-------------------------------------------------------------------------------------\nSERVER DOESN'T EXIST\n-------------------------------------------------------------------------------------\n")
+            print(f"\n-------------------------------------------------------------------------------------\nSERVER ({serverID}) DOESN'T EXIST\n-------------------------------------------------------------------------------------\n")
             # Use addNewServer
             self.addNewServer(serverID)
             self.addNewUser(serverID,userID)
@@ -105,13 +105,13 @@ class pointSystem():
             print("\n-------------------------------------------------------------------------------------\nSERVER EXISTS\n-------------------------------------------------------------------------------------\n")
             chosenServer = self.pointDatabase[self.serversKey][serverID]
             if self.checkUserExists(serverID,userID):
-                print("\n-------------------------------------------------------------------------------------\nUSER EXISTS\n-------------------------------------------------------------------------------------\n")
+                print(f"\n-------------------------------------------------------------------------------------\nUSER EXISTS\n-------------------------------------------------------------------------------------\n")
             else:
-                print("\n-------------------------------------------------------------------------------------\nUSER DOESN'T EXIST\n-------------------------------------------------------------------------------------\n")
+                print(f"\n-------------------------------------------------------------------------------------\nUSER DOESN'T EXIST\n-------------------------------------------------------------------------------------\n")
                 # Use addNewUser
                 self.addNewUser(serverID,userID)
         else:
-            print("\n-------------------------------------------------------------------------------------\nSERVER DOESN'T EXIST\n-------------------------------------------------------------------------------------\n")
+            print(f"\n-------------------------------------------------------------------------------------\nSERVER DOESN'T EXIST\n-------------------------------------------------------------------------------------\n")
             # Use addNewServer
             self.addNewServer(serverID)
             self.addNewUser(serverID,userID)
@@ -129,9 +129,9 @@ class pointSystem():
     def checkServerExists(self,serverID: str):
         # print(self.pointDatabase[serverID] is not None,"JSKDLF:JKSDJF:LKSJDF:LSDJKFSDFGHJKLKHSID:JFIKJSDJF:SJDFSEKJFO:JSIDKLJFHEISKFJ")
         # return self.pointDatabase[serverID] is not None
-        print("JLSKDFJS:LDKFLS:DJFKLSDFD",self.pointDatabase,"JSKLDFJ:SDJFKLSDJ:FKJSD:FLKD")
-        print(self.pointDatabase.keys())
-        print(serverID in self.pointDatabase[self.serversKey].keys())
+        # print("JLSKDFJS:LDKFLS:DJFKLSDFD",self.pointDatabase,"JSKLDFJ:SDJFKLSDJ:FKJSD:FLKD")
+        # print(self.pointDatabase.keys())
+        # print(serverID in self.pointDatabase[self.serversKey].keys())
         return serverID in self.pointDatabase[self.serversKey].keys()
     
     def checkUserExists(self,serverID: str, userID: str):
