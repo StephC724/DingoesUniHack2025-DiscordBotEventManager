@@ -20,7 +20,7 @@ from ai_responder import ai_msgchecker, ai_response
 #this way its just the dev server
 MY_GUILD = discord.Object(id=1350063882705829950)
 pointSystem = pointSystem()
-
+tracking = False
 
 
 class MyClient(discord.Client):
@@ -98,6 +98,9 @@ async def on_message(message: Message) -> None:
     if len(current_events) > 0: #Is the message sent during a study session
         pointSystem.userRemovePoints(serverID=message.guild, userID=message.author, points_amount=1)
 
+    if tracking: #If tracking the amount of messages in a time period
+        pointSystem.userRemovePoints(serverID=message.guild, userID=message.author, points_amount=1)
+
     # Command-like functionality using messages instead of `@bot.command`
     if message.content.startswith("!start_tracking"):
         try:
@@ -107,11 +110,14 @@ async def on_message(message: Message) -> None:
             await message.channel.send("Please specify a valid duration for tracking in seconds.")
 
 async def start_tracking(channel, duration):
+    tracking = True
     message_count.clear()
     
     await channel.send(f"Tracking messages for {duration} seconds...")
 
     await asyncio.sleep(duration)
+
+    tracking = False
 
     if not message_count:
         await channel.send("No messages were sent during the tracking period.")
