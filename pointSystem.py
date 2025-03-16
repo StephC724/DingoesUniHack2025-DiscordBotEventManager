@@ -87,9 +87,12 @@ class pointSystem():
         # check if user already exists if they do add points if not add both
 
         usersPoints = self.pointDatabase[self.serversKey][serverID][self.usersKey][userID][self.pointsKey]
-        usersPoints -= points_amount
+        # usersPoints -= points_amount
+        self.pointDatabase[self.serversKey][serverID][self.usersKey][userID][self.pointsKey] -= points_amount
+        
         if (usersPoints - points_amount) < 0:
-            usersPoints = 0
+            self.pointDatabase[self.serversKey][serverID][self.usersKey][userID][self.pointsKey] = 0
+            #usersPoints = 0
 
 
     #used to give a user a whole servers leaderboard
