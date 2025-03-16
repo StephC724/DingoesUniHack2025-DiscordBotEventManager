@@ -2,7 +2,7 @@ from typing import Final
 import os
 from dotenv import load_dotenv
 from discord import Intents, Client, Message
-from check_functions import *
+from event_management import *
 #thi stuff
 from discord.ext import commands
 from discord import Intents, Message
@@ -20,7 +20,7 @@ from ai_responder import ai_msgchecker, ai_response
 #this way its just the dev server
 MY_GUILD = discord.Object(id=1350063882705829950)
 pointSystem = pointSystem()
-
+tracking = False
 
 
 class MyClient(discord.Client):
@@ -86,7 +86,6 @@ async def on_message(message: Message) -> None:
     channel: str = str(message.channel)
     print(f'[{channel}] {username}: "{user_message}"')
 
-    await check_functions(message)
     # await send_encouraging_msg(message, user_message)
 
     user_id = message.author.id
@@ -94,6 +93,13 @@ async def on_message(message: Message) -> None:
         message_count[user_id] = 1
     else:
         message_count[user_id] += 1
+
+    current_events = await get_current_events(message.guild)
+    if len(current_events) > 0: #Is the message sent during a study session
+        pointSystem.userRemovePoints(serverID=message.guild, userID=message.author, points_amount=1)
+
+    if tracking: #If tracking the amount of messages in a time period
+        pointSystem.userRemovePoints(serverID=message.guild, userID=message.author, points_amount=1)
 
     # Command-like functionality using messages instead of `@bot.command`
     if message.content.startswith("!start_tracking"):
@@ -104,11 +110,14 @@ async def on_message(message: Message) -> None:
             await message.channel.send("Please specify a valid duration for tracking in seconds.")
 
 async def start_tracking(channel, duration):
+    tracking = True
     message_count.clear()
     
     await channel.send(f"Tracking messages for {duration} seconds...")
 
     await asyncio.sleep(duration)
+
+    tracking = False
 
     if not message_count:
         await channel.send("No messages were sent during the tracking period.")
@@ -178,6 +187,27 @@ async def leaderboard(interaction: discord.Interaction):
 )  
     await interaction.response.send_message(f'{leaderboard}')
 
+@client.tree.command()
+#describtion of each value that needs to be input
+@app_commands.describe(
+    name='The name of the event',
+    location='The amount of points to give',
+    start_date='The start date of the event in DD/MM/YYYY',
+    start_time='The start time of the event in 24 hour AEST HH:MM',
+    end_date='The start date of the event in DD/MM/YYYY',
+    end_time='The end time of the event in 24 hour AEST HH:MM'
+)
+async def create_event(interaction: discord.Interaction, name:str, location:str, start_date:str, start_time:str, end_date:str, end_time:str):
+    """
+    Event message format: 
+    /em create_event, name, location, start_date, start_time, end_date, end_time
+
+    Creates an event on the Discord server when user sends above formatted message
+    """
+    start_datetime = convert_to_datetime(start_date, start_time)
+    end_datetime = convert_to_datetime(end_date, end_time)
+    await discord.Guild.create_scheduled_event(self=interaction.guild, name=name, location=location, start_time=start_datetime, end_time=end_datetime, entity_type=discord.EntityType.external, privacy_level=discord.PrivacyLevel.guild_only)
+    await interaction.response.send_message(f'{name} has been created, double check events')
 
 ###
 ###
