@@ -97,11 +97,11 @@ async def on_message(message: Message) -> None:
     current_events = await get_current_events(message.guild)
     if len(current_events) > 0: #Is the message sent during a study session
         print("Attempted to deduct points")
-        pointSystemObj.userRemovePoints(message.guild, message.author, 1)
+        pointSystemObj.userRemovePoints(message.guild.id, message.author, 1)
 
     if tracking: #If tracking the amount of messages in a time period
         print("Points attempted to remove")
-        pointSystemObj.userRemovePoints(serverID=message.guild, userID=message.author, points_amount=1)
+        pointSystemObj.userRemovePoints(serverID=message.guild.id, userID=message.author, points_amount=1)
 
     # Command-like functionality using messages instead of `@bot.command`
     if message.content.startswith("!start_tracking"):
@@ -125,9 +125,9 @@ async def start_tracking(channel, duration):
         await channel.send("No messages were sent during the tracking period.")
     else:
         
-        for user,messages in message_count.items():
-            print(f"Removing {messages} points from user {user}.")
-            pointSystemObj.userRemovePoints(channel.guild, user, messages)
+        # for user,messages in message_count.items():
+        #     print(f"Removing {messages} points from user {user}.")
+        #     pointSystemObj.userRemovePoints(channel.guild, user, messages)
             
         results = "\n".join([f"<@{user_id}>: {count} messages, " for user_id, count in message_count.items()])
         await channel.send(f"Message count after {duration} seconds:\n{results}")
