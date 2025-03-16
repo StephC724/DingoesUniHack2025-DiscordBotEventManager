@@ -60,8 +60,6 @@ async def send_encouraging_msg(message:Message, user_message:str) -> None:
         require_response = ai_msgchecker(user_message)
         if require_response == "True":
             response = ai_response(user_message)
-        else:
-            response = require_response
         #Sends encouraging message in channel the user msg was sent in
         await message.channel.send(response)
     except Exception as e:
