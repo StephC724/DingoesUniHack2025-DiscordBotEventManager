@@ -116,7 +116,9 @@ async def start_tracking(channel, duration):
         
         for user,messages in message_count.items():
             print(f"Removing {messages} points from user {user}.")
+            print(f"Guild id: {channel.guild}")
             pointSystem.userRemovePoints(channel.guild, user, messages)
+            
             
         results = "\n".join([f"<@{user_id}>: {count} messages, " for user_id, count in message_count.items()])
         await channel.send(f"Message count after {duration} seconds:\n{results}")
